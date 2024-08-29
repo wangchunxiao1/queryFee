@@ -1,160 +1,110 @@
-<!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>明细查询</title>
+    <title>筛选页面</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            background-color: #f5f5f5;
         }
-
-        header {
-            background-color: #f8f8f8;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-
-        .back-button {
+        h1 {
             font-size: 24px;
-            cursor: pointer;
+            margin-bottom: 20px;
         }
-
-        .header-right {
-            display: flex;
-            align-items: center;
+        .form-group {
+            margin-bottom: 20px;
         }
-
-        .account-info {
-            display: flex;
-            justify-content: space-between;
+        .form-group label {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
             padding: 10px;
-            background-color: #f0f0f0;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
-
-        .time-selector {
-            display: flex;
-            justify-content: space-around;
-            padding: 10px;
-            background-color: #f0f0f0;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .time-button {
+        .form-group button {
             padding: 10px 20px;
+            font-size: 16px;
             border: none;
-            border-radius: 20px;
-            background-color: #f0f0f0;
-            margin: 0 5px;
+            border-radius: 4px;
+            background-color: #ff9800;
+            color: #ffffff;
             cursor: pointer;
-            transition: all 0.2s ease-in-out;
         }
-
-        .time-button.active {
-            background-color: orange;
-            color: white;
+        .form-group button:hover {
+            background-color: #ff7000;
         }
-
-        .transactions {
-            padding: 10px;
-            background-color: #fff;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        .form-group button[type="reset"] {
+            background-color: #f44336;
         }
-
-        .transaction-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-            transition: all 0.2s ease-in-out;
-        }
-
-        .transaction-item:last-child {
-            border-bottom: none;
-        }
-
-        .transaction-item:hover {
-            background-color: #f0f0f0;
+        .form-group button[type="reset"]:hover {
+            background-color: #d32f2f;
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="header-content">
-            <div class="back-button">❮</div>
-            <h1>明细查询</h1>
-            <div class="header-right">
+    <div class="container">
+        <h1>筛选</h1>
+        <form>
+            <div class="form-group">
+                <label for="start-date">交易时间</label>
+                <input type="date" id="start-date" name="start-date" value="2024-08-22">
+                <span>—</span>
+                <input type="date" id="end-date" name="end-date" value="2024-08-29">
             </div>
-        </div>
-    </header>
-    <main>
-        <div class="account-info">
-            <div class="account-number">6228 **** 9073</div>
-            <div class="currency">人民币 | 本币</div>
-        </div>
-        <div class="time-selector">
-            <button class="time-button" data-time="近一周">近一周</button>
-            <button class="time-button" data-time="近一月">近一月</button>
-            <button class="time-button" data-time="近三月">近三月</button>
-            <button class="filter-button">筛选</button>
-        </div>
-        <div class="transactions">
-            <!-- 交易数据将动态添加在这里 -->
-        </div>
-    </main>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const timeButtons = document.querySelectorAll('.time-button');
-            const transactions = document.querySelector('.transactions');
-
-            // 假数据
-            const data = [
-                { date: '2024-08-01 08:13:34', amount: -2181.90, type: '转支' },
-                { date: '2024-07-31 15:04:14', amount: 2181.90, type: '转存' },
-                { date: '2024-06-19 15:34:14', amount: -49400.00, type: '转支' },
-                { date: '2024-06-19 15:04:14', amount: 49400.00, type: '转存' }
-            ];
-
-            function displayTransactions(time) {
-                transactions.innerHTML = '';
-                const filteredData = data.filter(item => {
-                    const date = new Date(item.date);
-                    const now = new Date();
-                    const diff = now - date;
-                    const daysDiff = Math.floor(diff / (1000 * 60 * 60 * 24));
-                    return daysDiff <= time;
-                });
-
-                filteredData.forEach(item => {
-                    const transactionItem = document.createElement('div');
-                    transactionItem.className = 'transaction-item';
-                    transactionItem.innerHTML = `
-                        <div>${item.type}</div>
-                        <div>${item.date}</div>
-                        <div>${item.amount}</div>
-                    `;
-                    transactions.appendChild(transactionItem);
-                });
-            }
-
-            timeButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    timeButtons.forEach(btn => btn.classList.remove('active'));
-                    this.classList.add('active');
-                    const time = this.getAttribute('data-time');
-                    displayTransactions(time === '近一周' ? 7 : time === '近一月' ? 30 : 90);
-                });
-            });
-
-            // 默认显示近三月的数据
-            timeButtons[2].click();
-        });
-    </script>
+            <div class="form-group">
+                <label for="transaction-type">交易类型</label>
+                <div>
+                    <button type="button">全部</button>
+                    <button type="button">收入</button>
+                    <button type="button">支出</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="amount-range">金额</label>
+                <input type="number" id="min-amount" name="min-amount" placeholder="最小金额">
+                <span>—</span>
+                <input type="number" id="max-amount" name="max-amount" placeholder="最大金额">
+            </div>
+            <div class="form-group">
+                <label for="transaction-summary">交易摘要</label>
+                <div>
+                    <button type="button">全部</button>
+                    <button type="button">工资</button>
+                    <button type="button">理财</button>
+                    <button type="button">基金</button>
+                    <button type="button">外汇</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="counterparty-name">交易对方</label>
+                <input type="text" id="counterparty-name" name="counterparty-name" placeholder="对方名称">
+            </div>
+            <div class="form-group">
+                <label for="counterparty-account">对方账号（试试输入卡号后四位）</label>
+                <input type="text" id="counterparty-account" name="counterparty-account" placeholder="对方账号">
+            </div>
+            <div class="form-group">
+                <button type="reset">重置</button>
+                <button type="submit">确定</button>
+            </div>
+        </form>
+    </div>
 </body>
 </html>
